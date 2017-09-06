@@ -26,9 +26,6 @@ public class MetricUploaderTest implements MetricUploader {
     protected TopologyMetricsRunnable metricsRunnable;
     private static NimbusClient client = null;
 
-    public MetricUploaderTest() {
-    }
-
     @Override
     public void init(NimbusData nimbusData) throws Exception {
         logger.info("init");
@@ -42,6 +39,7 @@ public class MetricUploaderTest implements MetricUploader {
                 return thread;
             }
         });
+        //init a schedule pool to read data from rocksdb of jstorm every 1 min
         scheduledPool.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
@@ -65,10 +63,6 @@ public class MetricUploaderTest implements MetricUploader {
                         }
                     }
 
-                    double totalCpuUsage = JStormUtils.getTotalCpuUsage();
-                    Long freePhysicalMem = JStormUtils.getFreePhysicalMem();
-                    logger.info("cpu: " + totalCpuUsage);
-                    logger.info("mem: " + freePhysicalMem);
                 } catch (TException e) {
                     logger.info("get cluster info error ", e);
                 }
@@ -80,6 +74,7 @@ public class MetricUploaderTest implements MetricUploader {
     public void cleanup() {
     }
 
+    //copy from  DefaultMetricUploader, useless
     @Override
     public boolean registerMetrics(String clusterName, String topologyId,
                                    Map<String, Long> metrics) {
@@ -90,6 +85,7 @@ public class MetricUploaderTest implements MetricUploader {
         return true;
     }
 
+    //copy from DefaultMetricUploader, this method never runs
     @Override
     public boolean upload(String clusterName, String topologyId, TopologyMetric tpMetric, Map<String, Object> metricContext) {
         logger.info("upload1");
@@ -111,6 +107,7 @@ public class MetricUploaderTest implements MetricUploader {
         return true;
     }
 
+    //copy from DefaultMetricUploader, this method will run when the metric change, but still useless for us
     @Override
     public boolean upload(String clusterName, String topologyId, Object key, Map<String, Object> metricContext) {
         metricsRunnable.markUploaded((Integer) key);
@@ -124,6 +121,7 @@ public class MetricUploaderTest implements MetricUploader {
         return true;
     }
 
+    //provided by JstormHelper in jstorm 2.2.1
     public NimbusClient getNimbusClient(Map conf) {
         try {
             if (client != null) {
