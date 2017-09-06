@@ -50,15 +50,20 @@ public class MetricUploaderTest implements MetricUploader {
                 }
                 try {
                     ClusterSummary clusterInfo = client.getClient().getClusterInfo();
+                    //get list of topologies in this cluster
                     List<TopologySummary> topologies = clusterInfo.get_topologies();
                     for (TopologySummary topology : topologies) {
+                        //get topology id and name
+                        //the id is used for query, name for human reading
                         logger.info("topology info " + topology.get_id() + " " + topology.get_name());
                         TopologyMetric metric = metricsRunnable.getTopologyMetric(topology.get_id());
+                        //get data of "component metrics" page in jstorm UI
                         MetricInfo componentMetric = metric.get_componentMetric();
                         Map<String, Map<Integer, MetricSnapshot>> metrics = componentMetric.get_metrics();
                         for (Map.Entry<String, Map<Integer, MetricSnapshot>> oneMetric : metrics.entrySet()) {
                             String[] key = oneMetric.getKey().split("@");
                             String metricKey = key[1] + "@" + key[2] + "@" + key[6];
+                            //get(60) to get data in 1 min, also can get(600) for 10min, and so on
                             logger.info("metric one minute data for " + metricKey + " " + oneMetric.getValue().get(60));
                         }
                     }
