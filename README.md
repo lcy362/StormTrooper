@@ -5,4 +5,4 @@ Now there is [hdfsbolt](https://github.com/ptgoetz/storm-hdfs) and [kafkaspout](
 
 Also provide examples of hdfs bolt rotation policy and name formatting class.
 
-Also can get some instruction by the wiki pages, or see is in the blog(http://www.cnblogs.com/buptl/p/6520659.html).
+Also can get some instruction by the wiki pages, or see is in the blog(https://lcy362.github.io/posts/22103/).
